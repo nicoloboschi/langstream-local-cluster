@@ -294,9 +294,9 @@ start() {
       esac
   done
   start_minikube
+  install_minio
   install_langstream "$dev" "$build"
   install_kafka
-  install_minio
   configure_cli
   echo "Ready 🚀"
   echo "$0 langstream apps deploy my-app -app app-directory -i $(realpath $llr_dir/app-instance.yaml)"
@@ -311,8 +311,8 @@ delete_docker_container() {
  
 delete() {
   delete_docker_container $kafka_hostname
-  delete_docker_container $minio_hostname
   delete_minikube
+  delete_docker_container $minio_hostname
 }
 
 handle_load() {
