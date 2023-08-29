@@ -52,16 +52,14 @@ kubeconfig_path=$llr_dir/kube-config
 langstream_cli_config=$llr_dir/langstream-cli-config.yaml
 touch $langstream_cli_config
 
-if [ ! -f $llr_dir/app-instance.yaml ]; then
-    cat > $llr_dir/app-instance.yaml <<EOF
+cat > $llr_dir/app-instance.yaml <<EOF
 instance:
   streamingCluster:
     type: "kafka"
     configuration:
       admin:
-        bootstrap.servers: http://host.minikube.internal:39092
+        bootstrap.servers: host.minikube.internal:39092
 EOF
-fi
 
 
 rm -fr $llr_dir/dev-values.yaml
