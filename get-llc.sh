@@ -22,7 +22,7 @@ clear
 
 echo "Installing $(tput setaf 6)LLC$(tput setaf 7) please wait"
 
-URL="https://raw.githubusercontent.com/nicoloboschi/local-langstream-cluster/main/llc"
+URL="https://raw.githubusercontent.com/nicoloboschi/langstream-local-cluster/main/llc"
 
 llc_home_dir=$HOME/.llc
 mkdir -p $llc_home_dir
