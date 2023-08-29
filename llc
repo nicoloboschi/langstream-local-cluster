@@ -64,8 +64,7 @@ EOF
 fi
 
 
-if [ ! -f $llr_dir/dev-values.yaml ]; then
-  cat > $llr_dir/dev-values.yaml <<EOF
+cat > $llr_dir/dev-values.yaml <<EOF
 controlPlane:
   image:
     pullPolicy: Never
@@ -113,10 +112,8 @@ codeStorage:
     access-key: minioadmin
     secret-key: minioadmin
 EOF
-fi
 
-if [ ! -f $llr_dir/values.yaml ]; then
-  cat > $llr_dir/values.yaml <<EOF
+cat > $llr_dir/values.yaml <<EOF
 controlPlane:
   app:
     config:
@@ -140,7 +137,6 @@ codeStorage:
     access-key: minioadmin
     secret-key: minioadmin
 EOF
-fi
 
 minikube_cmd() {
   KUBECONFIG=$llr_dir/kube-config minikube --profile $minikube_profile "$@"
