@@ -118,7 +118,9 @@ start_minikube() {
 }
 
 delete_minikube() {
+  echo -n "Deleting minikube: "
   minikube_cmd delete
+  echo "✅"
 }
 
 helm_cmd() {
@@ -270,7 +272,6 @@ delete() {
   delete_docker_container $kafka_hostname
   delete_docker_container $minio_hostname
   delete_minikube
-  configure_cli
 }
 
 handle_load() {
