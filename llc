@@ -112,7 +112,9 @@ start_minikube() {
     echo "Minikube: ✅"
     return
   fi
-  minikube_cmd start --cpus 4
+  echo -n "Minikube: "
+  minikube_cmd start --cpus 4 >/dev/null
+  echo "✅"
 }
 
 delete_minikube() {
@@ -294,13 +296,13 @@ handle_load() {
 }
 build_no_restart() {
   eval $(minikube_cmd docker-env)
-  ./docker/build.sh "$@" &> /dev/null
+  ./docker/build.sh "$@"
   eval $(minikube_cmd docker-env -u)
 }
 
 handle_build() {
   eval $(minikube_cmd docker-env)
-  ./docker/build.sh "$@" &> /dev/null
+  ./docker/build.sh "$@"
   eval $(minikube_cmd docker-env -u)
 
   labels=(langstream-control-plane langstream-deployer langstream-api-gateway langstream-client)
