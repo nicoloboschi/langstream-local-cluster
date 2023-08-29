@@ -258,9 +258,17 @@ start() {
   install_minio
   configure_cli
 }
+
+delete_docker_container() {
+    local container=$1
+    echo -n "Deleting $container: "
+    docker rm -f $container &> /dev/null || true
+    echo "✅"
+}
+ 
 delete() {
-  docker rm -f $kafka_hostname
-  docker rm -f $minio_hostname
+  delete_docker_container $kafka_hostname
+  delete_docker_container $minio_hostname
   delete_minikube
   configure_cli
 }
