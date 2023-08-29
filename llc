@@ -64,6 +64,7 @@ EOF
 fi
 
 
+rm -fr $llr_dir/dev-values.yaml
 cat > $llr_dir/dev-values.yaml <<EOF
 controlPlane:
   image:
@@ -113,6 +114,7 @@ codeStorage:
     secret-key: minioadmin
 EOF
 
+rm -rf $llr_dir/values.yaml
 cat > $llr_dir/values.yaml <<EOF
 controlPlane:
   app:
