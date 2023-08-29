@@ -19,20 +19,15 @@ trap echo_failed_command EXIT
 
 clear
 
-echo "
-─█▀▀█ ░█▀▀▀█ ─█▀▀█ ░█▀▀█ 
-░█▄▄█ ─▀▀▀▄▄ ░█▄▄█ ░█▄▄█ 
-░█─░█ ░█▄▄▄█ ░█─░█ ░█───
-"
 
-echo "Installing $(tput setaf 6)ASAP$(tput setaf 7) please wait"
+echo "Installing $(tput setaf 6)LLC$(tput setaf 7) please wait"
 
-URL="https://raw.githubusercontent.com/nicoloboschi/asap/main/asap"
+URL="https://raw.githubusercontent.com/nicoloboschi/local-langstream-cluster/main/llc"
 
-asap_home_dir=$HOME/.asap
-mkdir -p $asap_home_dir
-asap_bin=$asap_home_dir/bin
-mkdir -p $asap_bin
+llc_home_dir=$HOME/.llc
+mkdir -p $llc_home_dir
+llc_bin=$llc_home_dir/bin
+mkdir -p $llc_bin
 
 darwin=false
 case "$(uname)" in
@@ -59,16 +54,16 @@ echo "$(tput setaf 2)[OK]$(tput setaf 7) - curl command is available"
 
 echo ""
 echo "$(tput setaf 6)Downloading:$(tput setaf 7)"
-curl --fail --location --progress-bar "$URL" > "$asap_bin/asap"  
-chmod +x $asap_bin/*
+curl --fail --location --progress-bar "$URL" > "$llc_bin/llc"  
+chmod +x $llc_bin/*
 echo "$(tput setaf 2)[OK]$(tput setaf 7) - Downloaded & Installed"  
 
 function inject_if_not_found() {
     local file=$1
     touch "$file"
-    if [[ -z $(grep 'asap/bin' "$file") ]]; then
+    if [[ -z $(grep 'llc/bin' "$file") ]]; then
         echo -e "\n$init_snipped" >> "$file"
-        echo "$(tput setaf 2)[OK]$(tput setaf 7) - asap bin added to ${file}"
+        echo "$(tput setaf 2)[OK]$(tput setaf 7) - llc bin added to ${file}"
     fi
 }
 
@@ -79,7 +74,7 @@ bash_profile="${HOME}/.bash_profile"
 bashrc="${HOME}/.bashrc"
 zshrc="${ZDOTDIR:-${HOME}}/.zshrc"
 init_snipped=$( cat << EOF
-export PATH=\$PATH:$asap_bin
+export PATH=\$PATH:$llc_bin
 EOF
 )
 
@@ -94,6 +89,6 @@ if [[ -s "$zshrc" ]]; then
 fi
 
 echo "$(tput setaf 2)[OK]$(tput setaf 7) - Installation Successful"
-echo "Open $(tput setaf 2)a new terminal$(tput setaf 7) and run: $(tput setaf 3)asap mvn whatever$(tput setaf 7)"
+echo "Open $(tput setaf 2)a new terminal$(tput setaf 7) and run: $(tput setaf 3)llc mvn whatever$(tput setaf 7)"
 echo ""
 echo "You can close this window."
