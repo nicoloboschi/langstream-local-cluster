@@ -109,7 +109,7 @@ apiGateway:
 codeStorage:
   type: s3
   configuration:
-    endpoint: http://host.minikube.internal:9090
+    endpoint: http://host.minikube.internal:9000
     access-key: minioadmin
     secret-key: minioadmin
 EOF
@@ -135,7 +135,7 @@ apiGateway:
 codeStorage:
   type: s3
   configuration:
-    endpoint: http://host.minikube.internal:9090
+    endpoint: http://host.minikube.internal:9000
     access-key: minioadmin
     secret-key: minioadmin
 EOF
@@ -264,6 +264,7 @@ install_minio() {
    -d \
    --name $minio_hostname \
    -p 9090:9090 \
+   -p 9000:9000 \
    -v $llr_dir/minio:/data \
    quay.io/minio/minio:latest \
    server /data --console-address :9090) > /dev/null
