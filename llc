@@ -52,6 +52,18 @@ kubeconfig_path=$llr_dir/kube-config
 langstream_cli_config=$llr_dir/langstream-cli-config.yaml
 touch $langstream_cli_config
 
+if [ ! -f $llr_dir/app-instance.yaml ]; then
+    cat > $llr_dir/app-instance.yaml <<EOF
+instance:
+  streamingCluster:
+    type: "kafka"
+    configuration:
+      admin:
+        bootstrap.servers: http://host.minikube.internal:39092
+EOF
+fi
+
+
 if [ ! -f $llr_dir/dev-values.yaml ]; then
   cat > $llr_dir/dev-values.yaml <<EOF
 controlPlane:
@@ -89,6 +101,33 @@ apiGateway:
     repository: langstream/langstream-api-gateway
     pullPolicy: Never
     tag: "latest-dev"
+  app:
+    config:
+      logging.level.ai.langstream.apigateway: debug
+
+
+codeStorage:
+  type: s3
+  configuration:
+    endpoint: http://host.minikube.internal:9000
+    access-key: minioadmin
+    secret-key: minioadmin
+EOF
+fi
+
+if [ ! -f $llr_dir/values.yaml ]; then
+  cat > $llr_dir/values.yaml <<EOF
+controlPlane:
+  app:
+    config:
+      logging.level.ai.langstream.webservice: debug
+      application.storage.global.type: kubernetes
+
+deployer:
+  app:
+    config: {}
+
+apiGateway:
   app:
     config:
       logging.level.ai.langstream.apigateway: debug
@@ -163,7 +202,7 @@ install_langstream() {
     helm_cmd upgrade --install langstream -n $k8s_namespace --create-namespace langstream/langstream --values $llr_dir/dev-values.yaml > /dev/null
   else
     echo -n "LangStream: "
-    helm_cmd upgrade --install langstream langstream/langstream -n $k8s_namespace --create-namespace > /dev/null
+    helm_cmd upgrade --install langstream langstream/langstream -n $k8s_namespace --create-namespace --values $llr_dir/values.yaml > /dev/null
   fi
   echo "✅"
 
@@ -192,7 +231,7 @@ install_kafka() {
   fi
 
 
-  docker run \
+  (docker run \
     -d \
     --name $kafka_hostname \
     -p 39092:39092 \
@@ -207,7 +246,7 @@ install_kafka() {
     -e KAFKA_LOG_DIRS='/tmp/kraft-combined-logs' \
     -e CLUSTER_ID=ciWo7IWazngRchmPES6q5A== \
     -v $llr_dir/kafka:/var/lib/kafka/data \
-    confluentinc/cp-kafka:7.5.0
+    confluentinc/cp-kafka:7.5.0) > /dev/null
     echo "Kafka: ✅"
 }
 
@@ -223,13 +262,13 @@ install_minio() {
   if [ "$(docker ps -a -q -f name=$minio_hostname)" ]; then
     docker rm -f $minio_hostname
   fi
-  docker run \
+  (docker run \
    -d \
    --name $minio_hostname \
    -p 9090:9090 \
    -v $llr_dir/minio:/data \
    quay.io/minio/minio:latest \
-   server /data --console-address :9090
+   server /data --console-address :9090) > /dev/null
    echo "Minio: ✅"
 }
 configure_cli() {
@@ -259,6 +298,8 @@ start() {
   install_kafka
   install_minio
   configure_cli
+  echo "Ready 🚀"
+  echo "$0 langstream apps deploy my-app -app app-directory -i $(realpath $llr_dir/app-instance.yaml)"
 }
 
 delete_docker_container() {
