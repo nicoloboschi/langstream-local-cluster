@@ -109,7 +109,7 @@ apiGateway:
 codeStorage:
   type: s3
   configuration:
-    endpoint: http://host.minikube.internal:9000
+    endpoint: http://host.minikube.internal:9090
     access-key: minioadmin
     secret-key: minioadmin
 EOF
@@ -136,7 +136,7 @@ apiGateway:
 codeStorage:
   type: s3
   configuration:
-    endpoint: http://host.minikube.internal:9000
+    endpoint: http://host.minikube.internal:9090
     access-key: minioadmin
     secret-key: minioadmin
 EOF
