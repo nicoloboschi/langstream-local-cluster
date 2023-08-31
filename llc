@@ -139,7 +139,7 @@ codeStorage:
 EOF
 
 minikube_cmd() {
-  KUBECONFIG=$llr_dir/kube-config minikube --profile $minikube_profile "$@"
+  KUBECONFIG=$kubeconfig_path minikube --profile $minikube_profile "$@"
 }
 
 start_minikube() {
@@ -149,6 +149,7 @@ start_minikube() {
   fi
   echo -n "Minikube: "
   minikube_cmd start --cpus 4 >/dev/null
+  kubectl_cmd config set-context --current --namespace=$k8s_namespace
   echo "✅"
 }
 
@@ -376,6 +377,9 @@ elif [ "$arg1" == "load" ]; then
 elif [ "$arg1" == "build" ]; then
   shift
   handle_build "$@"
+elif [ "$arg1" == "get-instance" ]; then
+  shift
+  echo "$(realpath $llr_dir/app-instance.yaml)"
 elif [ "$arg1" == "get-config" ]; then
   shift
   echo "$kubeconfig_path"
