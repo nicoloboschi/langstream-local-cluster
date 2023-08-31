@@ -353,7 +353,22 @@ handle_build() {
   ./docker/build.sh "$@"
   eval $(minikube_cmd docker-env -u)
 
-  labels=(langstream-control-plane langstream-deployer langstream-api-gateway langstream-client)
+  docker_build_input=$1 
+  if [[ "$docker_build_input" == "control-plane" ]]; then
+    labels=(langstream-control-plane)
+  elif [[ "$docker_build_input" == "operator" || "$docker_build_input" == "deployer" ]];
+    labels=(langstream-deployer)
+  elif [[ "$docker_build_input" == "cli" ]];
+    labels=(langstream-client)
+  elif [[ "$docker_build_input" == "api-gateway" ]];
+    labels=(langstream-api-gateway)
+  elif [[ "$docker_build_input" == "runtime" ]];
+    labels=()
+  else 
+    labels=(langstream-control-plane langstream-deployer langstream-api-gateway langstream-client)
+  fi
+
+  
   for label in "${labels[@]}"; do
     kubectl_cmd -n $k8s_namespace delete pod -l app.kubernetes.io/name=$label &> /dev/null
     echo "Pod $label: ✅"
