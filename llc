@@ -36,7 +36,7 @@ check_command getopts
 help() {
   echo "LangStream local cluster."
   echo
-  echo "Syntax: $1 [-h]"
+  echo "Syntax: $0 [-h]"
   echo "options:"
   echo "h     Print this Help."
   echo
