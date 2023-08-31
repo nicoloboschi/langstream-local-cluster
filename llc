@@ -376,6 +376,15 @@ elif [ "$arg1" == "load" ]; then
 elif [ "$arg1" == "build" ]; then
   shift
   handle_build "$@"
+elif [ "$arg1" == "get-config" ]; then
+  shift
+  echo "$kubeconfig_path"
+elif [ "$arg1" == "kubectl" ]; then
+  shift
+  kubectl_cmd "$@"
+elif [ "$arg1" == "k9s" ]; then
+  shift
+  KUBECONFIG=$kubeconfig_path k9s "$@"
 else
   echo "Unknown command $arg1"
   help
