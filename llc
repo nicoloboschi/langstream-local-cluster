@@ -356,13 +356,13 @@ handle_build() {
   docker_build_input=$1 
   if [[ "$docker_build_input" == "control-plane" ]]; then
     labels=(langstream-control-plane)
-  elif [[ "$docker_build_input" == "operator" || "$docker_build_input" == "deployer" ]];
+  elif [[ "$docker_build_input" == "operator" || "$docker_build_input" == "deployer" ]]; then
     labels=(langstream-deployer)
-  elif [[ "$docker_build_input" == "cli" ]];
+  elif [[ "$docker_build_input" == "cli" ]]; then
     labels=(langstream-client)
-  elif [[ "$docker_build_input" == "api-gateway" ]];
+  elif [[ "$docker_build_input" == "api-gateway" ]]; then
     labels=(langstream-api-gateway)
-  elif [[ "$docker_build_input" == "runtime" ]];
+  elif [[ "$docker_build_input" == "runtime" ]]; then
     labels=()
   else 
     labels=(langstream-control-plane langstream-deployer langstream-api-gateway langstream-client)
