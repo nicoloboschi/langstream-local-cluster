@@ -383,7 +383,7 @@ if [ "$arg1" == "start" ]; then
 elif [ "$arg1" == "delete" ]; then
   shift
   delete
-elif [ "$arg1" == "langstream" ]; then
+elif [ "$arg1" == "langstream" ] || [ "$arg1" == "cli" ]; then
   shift
   run_cli "$@"
 elif [ "$arg1" == "load" ]; then
