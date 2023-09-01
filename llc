@@ -256,6 +256,7 @@ install_kafka() {
     -e KAFKA_CONTROLLER_QUORUM_VOTERS='1@0.0.0.0:9093' \
     -e KAFKA_LOG_DIRS='/tmp/kraft-combined-logs' \
     -e CLUSTER_ID=ciWo7IWazngRchmPES6q5A== \
+    -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
     -v $llr_dir/kafka:/var/lib/kafka/data \
     confluentinc/cp-kafka:7.5.0) > /dev/null
     echo "Kafka: ✅"
