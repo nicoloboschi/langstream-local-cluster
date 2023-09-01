@@ -34,12 +34,27 @@ check_command getopts
 
 
 help() {
-  echo "LangStream local cluster."
-  echo
-  echo "Syntax: $0 [-h]"
-  echo "options:"
-  echo "h     Print this Help."
-  echo
+  echo """
+LangStream local cluster.
+
+Syntax: $0 [options]
+
+Options:
+  start [--dev] [--load]    Start the LangStream local cluster.
+                            --dev    Start in development mode. This will use the latest development images that are built locally.
+                            --load   Load LangStream images instead of building them. Only for dev mode.
+  delete                    Delete the LangStream local cluster.
+  langstream|cli <command>  Run the LangStream CLI with the given command.
+  load <image>              Load a specific Docker image into Minikube.
+  build <component>         Build docker image for a specific LangStream component and restart it. No arguments to rebuild all the images.
+  get-instance              Get the path to the LangStream app instance YAML file.
+  get-config                Get the path to the Kubernetes configuration file.
+  kubectl <command>         Run kubectl with the given command.
+  k9s <command>             Run K9s with the given command.
+
+Options:
+  -h, --help                Print this help message.
+"""
 }
 
 minikube_profile=langstream-local-cluster
@@ -179,11 +194,11 @@ load_image() {
 
 install_langstream() {
   local dev="$1"
-  local build="$2"
+  local load="$2"
   helm_cmd repo add langstream https://datastax.github.io/langstream &> /dev/null || true
   helm_cmd repo update &> /dev/null
   if [ "$dev" == "true" ]; then
-    if [ "$build" == "true" ]; then
+    if [ "$load" == "false" ]; then
       echo -n "Building images: "
       build_no_restart
       echo "✅"
@@ -283,17 +298,17 @@ run_cli() {
 }
 start() {
   local dev="false"
-  local build="false"
+  local load="false"
   while [[ "$#" -gt 0 ]]; do
       case $1 in
           --dev) dev="true"; shift ;;
-          --build) build="true"; shift ;;
+          --load) load="true"; shift ;;
           *) echo "Unknown parameter passed: $1"; exit 1 ;;
       esac
   done
   start_minikube
   install_minio
-  install_langstream "$dev" "$build"
+  install_langstream "$dev" "$load"
   install_kafka
   configure_cli
   echo "Ready 🚀"
