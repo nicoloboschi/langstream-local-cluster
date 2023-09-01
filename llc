@@ -51,9 +51,8 @@ Options:
   get-config                Get the path to the Kubernetes configuration file.
   kubectl <command>         Run kubectl with the given command.
   k9s <command>             Run K9s with the given command.
+  help                      Print this help message. 
 
-Options:
-  -h, --help                Print this help message.
 """
 }
 
@@ -391,8 +390,10 @@ handle_build() {
 }
 
 
-arg1=$1
-if [ "$arg1" == "start" ]; then
+arg1=${1:-""}
+if [ "$arg1" == "" ] || [ "$arg1" == "help" ]; then
+  help
+elif [ "$arg1" == "start" ]; then
   shift
   start "$@"
 elif [ "$arg1" == "delete" ]; then
