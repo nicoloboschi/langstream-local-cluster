@@ -22,7 +22,7 @@ clear
 
 echo "Installing $(tput setaf 6)LLC$(tput setaf 7) please wait"
 
-URL="https://raw.githubusercontent.com/nicoloboschi/langstream-local-cluster/main/llc"
+URL="https://raw.githubusercontent.com/nicoloboschi/langstream-local-cluster/main/llc?$(date +%s)"
 
 llc_home_dir=$HOME/.llc
 mkdir -p $llc_home_dir
@@ -54,7 +54,7 @@ echo "$(tput setaf 2)[OK]$(tput setaf 7) - curl command is available"
 
 echo ""
 echo "$(tput setaf 6)Downloading:$(tput setaf 7)"
-curl --fail --location --progress-bar "$URL" > "$llc_bin/llc"  
+curl -H 'Cache-Control: no-cache, no-store' --fail --location --progress-bar "$URL" > "$llc_bin/llc"  
 chmod +x $llc_bin/*
 echo "$(tput setaf 2)[OK]$(tput setaf 7) - Downloaded & Installed"  
 
