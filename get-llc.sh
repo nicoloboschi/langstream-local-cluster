@@ -89,6 +89,6 @@ if [[ -s "$zshrc" ]]; then
 fi
 
 echo "$(tput setaf 2)[OK]$(tput setaf 7) - Installation Successful"
-echo "Open $(tput setaf 2)a new terminal$(tput setaf 7) and run: $(tput setaf 3)llc mvn whatever$(tput setaf 7)"
+echo "Open $(tput setaf 2)a new terminal$(tput setaf 7) and run: $(tput setaf 3)llc start$(tput setaf 7)"
 echo ""
 echo "You can close this window."
