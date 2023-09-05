@@ -387,11 +387,12 @@ handle_build() {
     labels=(langstream-control-plane langstream-deployer langstream-api-gateway langstream-client)
   fi
 
-  
-  for label in "${labels[@]}"; do
-    kubectl_cmd -n $k8s_namespace delete pod -l app.kubernetes.io/name=$label &> /dev/null
-    echo "Pod $label: ✅"
-  done
+  if (( ${#labels[@]} )); then
+    for label in "${labels[@]}"; do
+        kubectl_cmd -n $k8s_namespace delete pod -l app.kubernetes.io/name=$label &> /dev/null
+        echo "Pod $label: ✅"
+    done
+  fi
 }
 
 
