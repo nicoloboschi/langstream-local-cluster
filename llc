@@ -167,13 +167,13 @@ start_minikube() {
   fi
   echo -n "Minikube: "
   minikube_cmd start --cpus 4 >/dev/null
-  kubectl_cmd config set-context --current --namespace=$k8s_namespace
+  kubectl_cmd config set-context --current --namespace=$k8s_namespace >/dev/null
   echo "✅"
 }
 
 delete_minikube() {
   echo -n "Deleting minikube: "
-  minikube_cmd delete
+  minikube_cmd delete --purge
   echo "✅"
 }
 
@@ -265,6 +265,10 @@ install_kafka() {
     confluentinc/cp-kafka:7.5.0) > /dev/null
     echo "Kafka: ✅"
 }
+delete_kafka() {
+    delete_docker_container $kafka_hostname
+    rm -rf $llr_dir/kafka
+}
 
 minio_hostname=langstream-minio
 
@@ -288,12 +292,17 @@ install_minio() {
    server /data --console-address :9090) > /dev/null
    echo "Minio: ✅"
 }
+delete_minio() {
+    delete_docker_container $minio_hostname
+    rm -rf $llr_dir/minio
+}
+
 configure_cli() {
   control_plane_url=$(start_port_forward langstream-control-plane)
   api_gateway_url=$(start_port_forward langstream-api-gateway)
   langstream -V
   langstream profiles delete local-langstream-cluster &> /dev/null || true
-  langstream profiles create local-langstream-cluster --web-service-url $control_plane_url --api-gateway-url $api_gateway_url --tenant default
+  langstream profiles create local-langstream-cluster --web-service-url $control_plane_url --api-gateway-url $api_gateway_url --tenant default >/dev/null
   echo "CLI: ✅"
 }
 
@@ -301,7 +310,7 @@ run_cli() {
   langstream -p local-langstream-cluster "$@"
 }
 cleanup_docker_env() {
-  echo -n "Docker env: "
+  echo -n "Docker: "
   docker system prune -f &> /dev/null
   docker volume prune -f &> /dev/null
   echo "✅"
@@ -324,8 +333,8 @@ start() {
   configure_cli
   echo "Ready 🚀"
   echo "Deploy your first app with:"
-  echo "llc langstream apps deploy app -app https://github.com/LangStream/langstream/tree/main/examples/applications/python-processor-exclamation -i \$(llc get-instance)" -s https://raw.githubusercontent.com/LangStream/langstream/main/examples/secrets/secrets.yaml
-  echo "llc apps get app"
+  echo "llc cli apps deploy app -i \$(llc get-instance)" -s https://raw.githubusercontent.com/LangStream/langstream/main/examples/secrets/secrets.yaml -app https://github.com/LangStream/langstream/tree/main/examples/applications/python-processor-exclamation 
+  echo "llc cli apps get app"
 }
 
 delete_docker_container() {
@@ -336,9 +345,9 @@ delete_docker_container() {
 }
  
 delete() {
-  delete_docker_container $kafka_hostname
+  delete_kafka
   delete_minikube
-  delete_docker_container $minio_hostname
+  delete_minio
 }
 
 handle_load() {
@@ -413,7 +422,7 @@ elif [ "$arg1" == "start" ]; then
   start "$@"
 elif [ "$arg1" == "delete" ]; then
   shift
-  delete
+  delete "$@"
 elif [ "$arg1" == "langstream" ] || [ "$arg1" == "cli" ]; then
   shift
   run_cli "$@"
