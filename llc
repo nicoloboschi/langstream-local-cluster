@@ -21,7 +21,7 @@ set -o errexit -o pipefail -o nounset
 check_command() {
   if ! command -v $1 &> /dev/null
   then
-    echo "Command $1 could not be found"
+    echo "Command $1 could not be found. $2"
     exit
   fi
 }
@@ -30,7 +30,7 @@ check_command docker
 check_command minikube
 check_command helm
 check_command kubectl
-check_command getopts
+check_command langstream "Please install LangStream CLI using the instructions at https://github.com/LangStream/langstream#installation"
 
 
 help() {
@@ -291,14 +291,14 @@ install_minio() {
 configure_cli() {
   control_plane_url=$(start_port_forward langstream-control-plane)
   api_gateway_url=$(start_port_forward langstream-api-gateway)
-  run_cli configure webServiceUrl $control_plane_url
-  run_cli configure apiGatewayUrl $api_gateway_url
-  run_cli configure tenant default
+  langstream -V
+  langstream profiles delete local-langstream-cluster &> /dev/null || true
+  langstream profiles create local-langstream-cluster --web-service-url $control_plane_url --api-gateway-url $api_gateway_url --tenant default
   echo "CLI: ✅"
 }
 
 run_cli() {
-  LANGSTREAM_CLI_CONFIG=$langstream_cli_config langstream "$@"
+  langstream -p local-langstream-cluster "$@"
 }
 start() {
   local dev="false"
@@ -316,7 +316,9 @@ start() {
   install_kafka
   configure_cli
   echo "Ready 🚀"
-  echo "$0 langstream apps deploy my-app -app app-directory -i $(realpath $llr_dir/app-instance.yaml)"
+  echo "Deploy your first app with:"
+  echo "llc langstream apps deploy app -app https://github.com/LangStream/langstream/tree/main/examples/applications/python-processor-exclamation -i \$(llc get-instance)" -s https://raw.githubusercontent.com/LangStream/langstream/main/examples/secrets/secrets.yaml
+  echo "llc apps get app"
 }
 
 delete_docker_container() {
