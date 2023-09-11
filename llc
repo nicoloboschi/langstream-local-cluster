@@ -300,6 +300,12 @@ configure_cli() {
 run_cli() {
   langstream -p local-langstream-cluster "$@"
 }
+cleanup_docker_env() {
+  echo -n "Docker env: "
+  docker system prune -f &> /dev/null
+  docker volume prune -f &> /dev/null
+  echo "✅"
+}
 start() {
   local dev="false"
   local load="false"
@@ -310,6 +316,7 @@ start() {
           *) echo "Unknown parameter passed: $1"; exit 1 ;;
       esac
   done
+  cleanup_docker_env
   start_minikube
   install_minio
   install_langstream "$dev" "$load"
