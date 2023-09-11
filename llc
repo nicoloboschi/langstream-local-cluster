@@ -407,6 +407,7 @@ handle_build() {
 
   if (( ${#labels[@]} )); then
     for label in "${labels[@]}"; do
+        kubectl_cmd -n $k8s_namespace patch deployment -l app.kubernetes.io/name=$label -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"langstream\",\"image\":\"langstream/$label:latest-dev\"}]}}}}"
         kubectl_cmd -n $k8s_namespace delete pod -l app.kubernetes.io/name=$label &> /dev/null
         echo "Pod $label: ✅"
     done
