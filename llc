@@ -302,7 +302,7 @@ configure_cli() {
   api_gateway_url=$(start_port_forward langstream-api-gateway)
   langstream -V
   langstream profiles delete local-langstream-cluster &> /dev/null || true
-  langstream profiles create local-langstream-cluster --web-service-url $control_plane_url --api-gateway-url $api_gateway_url --tenant default >/dev/null
+  langstream profiles create local-langstream-cluster --web-service-url $control_plane_url --api-gateway-url ${api_gateway_url/http/ws} --tenant default >/dev/null
   echo "CLI: ✅"
 }
 
