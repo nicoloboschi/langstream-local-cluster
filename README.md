@@ -37,5 +37,5 @@ llc delete
 ## Get help
 
 ```
-llc -h
+llc help
 ```
