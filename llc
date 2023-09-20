@@ -24,12 +24,6 @@ LangStream local cluster.
 Syntax: $0 [options]
 
 Options:
-  dev                       Dev commands. It requires to run the command from the langstream root directory.
-      start [--load]        Start the LangStream local cluster in development mode. This will use the latest development images that are built locally.
-                              --load   Load LangStream images instead of building them.
-      load <image>              Load a specific Docker image into Minikube.
-      build <component>         Build docker image for a specific LangStream component and restart it. No arguments to rebuild all the images.
-      get-values            Get the path to the Helm values. This values file is used when the cluster is started in dev mode.
   start                     Start the LangStream local cluster.
   delete                    Delete the LangStream local cluster and local data.
   langstream|cli <command>  Run the LangStream CLI with the given command.
@@ -41,6 +35,12 @@ Options:
   k9s <command>             Run K9s with the given command.
   helm <command>            Run Helm with the given command.
   help                      Print this help message. 
+  dev                       Dev commands. It requires to run the command from the langstream root directory.
+      start [--load]        Start the LangStream local cluster in development mode. This will use the latest development images that are built locally.
+                              --load   Load LangStream images instead of building them.
+      load <image>              Load a specific Docker image into Minikube.
+      build <component>         Build docker image for a specific LangStream component and restart it. No arguments to rebuild all the images.
+      get-values            Get the path to the Helm values. This values file is used when the cluster is started in dev mode.
 
 """
 }
