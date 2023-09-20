@@ -1,20 +1,4 @@
 #!/bin/bash
-#
-#
-# Copyright DataStax, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 set -e
 set -o errexit -o pipefail -o nounset
@@ -40,18 +24,19 @@ LangStream local cluster.
 Syntax: $0 [options]
 
 Options:
-  start [--dev] [--load]    Start the LangStream local cluster.
-                            --dev    Start in development mode. This will use the latest development images that are built locally.
-                            --load   Load LangStream images instead of building them. Only for dev mode.
-  delete                    Delete the LangStream local cluster.
+  dev                       Dev commands. It requires to run the command from the langstream root directory.
+      start [--load]        Start the LangStream local cluster in development mode. This will use the latest development images that are built locally.
+                              --load   Load LangStream images instead of building them.
+      load <image>              Load a specific Docker image into Minikube.
+      build <component>         Build docker image for a specific LangStream component and restart it. No arguments to rebuild all the images.
+      get-values            Get the path to the Helm values. This values file is used when the cluster is started in dev mode.
+  start                     Start the LangStream local cluster.
+  delete                    Delete the LangStream local cluster and local data.
   langstream|cli <command>  Run the LangStream CLI with the given command.
-  load <image>              Load a specific Docker image into Minikube.
-  build <component>         Build docker image for a specific LangStream component and restart it. No arguments to rebuild all the images.
   get-instance              Get the path to the LangStream app instance YAML file.
   get-config                Get the path to the Kubernetes configuration file.
   get-config                Get the path to the Kubernetes configuration file.
   get-values                Get the path to the Helm values. 
-  get-dev-values            Get the path to the Helm values. This values file is used when the cluster is started in dev mode.
   kubectl <command>         Run kubectl with the given command.
   k9s <command>             Run K9s with the given command.
   helm <command>            Run Helm with the given command.
@@ -430,12 +415,6 @@ elif [ "$arg1" == "delete" ]; then
 elif [ "$arg1" == "langstream" ] || [ "$arg1" == "cli" ]; then
   shift
   run_cli "$@"
-elif [ "$arg1" == "load" ]; then
-  shift
-  handle_load "$@"
-elif [ "$arg1" == "build" ]; then
-  shift
-  handle_build "$@"
 elif [ "$arg1" == "get-instance" ]; then
   shift
   echo "$(realpath $llr_dir/app-instance.yaml)"
@@ -454,10 +433,28 @@ elif [ "$arg1" == "helm" ]; then
 elif [ "$arg1" == "get-values" ]; then
   shift
   echo "$llr_dir/values.yaml"
-elif [ "$arg1" == "get-dev-values" ]; then
+elif [ "$arg1" == "dev" ]; then
   shift
-  echo "$llr_dir/dev-values.yaml"
+  devarg1=${1:-""}
+  if [ "$devarg1" == "start" ]; then
+    shift
+    start --dev "$@"
+  elif [ "$devarg1" == "load" ]; then
+    shift
+    handle_load "$@"
+  elif [ "$devarg1" == "build" ]; then
+    shift
+    handle_build "$@"
+  elif [ "$devarg1" == "get-values" ]; then
+    shift
+    echo "$llr_dir/dev-values.yaml"
+  else 
+    echo "Unknown command $arg1"
+    help
+    exit 1
+  fi
 else
   echo "Unknown command $arg1"
   help
+  exit 1
 fi
